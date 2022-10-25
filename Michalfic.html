@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+    <html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Michael`s Player</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inspiration&family=Press+Start+2P&display=swap');
+            video {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+            body{
+                height: 100%;
+                margin: 0px;
+                display: flex;
+                flex-direction: column;;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 25px;
+                margin-top: 10%;
+            }
+            #trackbox{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .trackbar{
+                height: 50px;
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                color: white;
+                width: 700px;
+            }
+            #background {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                min-width: 100%;
+                min-height: 100%;
+                width: auto;
+                height: auto;
+                overflow: hidden;
+                z-index: -1;
+            }
+          
+            .playbutton {
+                display: block;
+                float: right;
+                opacity: 25%;
+                width: 30px;
+                height: 30px;
+                margin: 14px 0px 0px 14px;
+                font-weight: bold;
+                background:url(img/Play.png) no-repeat;
+                border: none;
+                cursor: pointer;
+                outline: none;
+            }
+            .playbutton:hover{
+                opacity:100; 
+            }
+            .trackname{
+                float: left;
+                color: #000; 
+                margin: 20px 0px 0px 14px; 
+                font-size:20px; 
+                font-weight: bold;
+                color: white;
+                font-family: 'Inspiration', cursive;
+                font-family: 'Press Start 2P', cursive;
+                font-size: 15px;
+                text-shadow: 0.2em 0.25em 0.10em black;
+            }
+            #player {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Inspiration', cursive;
+                font-family: 'Press Start 2P', cursive;
+                font-size: 40px;
+                text-shadow: 0.2em 0.2em 0.10em black
+            }
+            #title {
+                width: 100%;
+                height: 100%;
+            }
+            #gradient {
+                background: linear-gradient(90deg, blue, red);
+                opacity: 50%;
+                height: 100%;
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            }
+            @media only screen and (max-width: 700px){
+                #player{
+                    font-size: 30px;
+                }
+                .trackname{
+                    font-size: 12px;
+                }
+            }
+        </style>
+
+            
+        <script>
+        function _(id){
+            return document.getElementById(id);
+        }
+
+        function audioApp(){
+            var audio = new Audio();
+            var audio_folder = "mp3/";
+            var audio_ext = ".mp3";
+            var audio_index = 1;
+            var is_playing = false;
+            var playingtrack;
+            var trackbox = _("trackbox");
+            var tracks = {
+                "track1":["@Michael x @cxld - trenches", "trenches"],
+                "track2":["@Michael x @smokey.jam - turk", "turk"] ,
+                "track3":["@Michael x @PRXD.CXLD - aceofspades", "aceofspades"],
+                "track4":["@Michael x @Filpuu - hustler", "hustler"],
+                "track5":["@michael x @Filppu - amnesia", "amnesia"],
+                "track6":["@michael x DVSKI x YVNGMONTY - love me", "loveme"],
+            };
+            
+                
+            for(var track in tracks) {
+                var tb = document.createElement("div");
+                var pb = document.createElement("button");
+                var tn = document.createElement("div");
+                tb.className = "trackbar";
+                pb.className = "playbutton";
+                tn.className = "trackname";
+                tn.innerHTML = audio_index +". "+ tracks[track][0];
+                pb.id = tracks[track][1];
+                pb.addEventListener("click", switchTrack);
+                tb.appendChild(pb);
+                tb.appendChild(tn);
+                trackbox.appendChild(tb);
+                audio_index++;
+            }
+
+            audio.addEventListener("ended", function(){
+                _(playingtrack).style.background = "url(img/Play.png)";
+                playingtrack = "";
+            });
+
+            function switchTrack(event){
+                if(is_playing){
+                    if(playingtrack != event.target.id) {
+                        is_playing = true;
+                        _(playingtrack).style.background = "url(img/Play.png) no-repeat"
+                        event.target.style.background = "url(img/Pause.png) no-repeat"
+                        audio.src = audio_folder+event.target.id+audio_ext;
+                        audio.play();
+                    } else {
+                        audio.pause()
+                        is_playing = false;
+                        event.target.style.background = "url(img/Play.png) no-repeat"                    }
+                } else {
+                    is_playing = true;
+                    event.target.style.background = "url(img/Pause.png) no-repeat"
+                    if(playingtrack != event.target.id){
+                        audio.src = audio_folder+event.target.id+audio_ext;
+                    }
+                    audio.play()
+                }
+            playingtrack = event.target.id
+            }
+        }
+        window.addEventListener("load", audioApp)
+        </script>
+    </head>
+    <body>
+        
+        <video id="background" autoplay="autoplay" loop="loop">
+            <source src="mp4/redd.mp4" type="video/mp4" />
+        </video>
+        
+        <div id="container">
+            <div id="title">
+                <h1 id="player">Michael`s Player</h1>
+            </div>
+            <div id="content">
+                <div id="trackbox"></div>
+                <div id="gradient"></div>
+            </div>
+        </div>
+    </body>    
+</html>
